@@ -538,3 +538,27 @@ header {
 .motivation strong {
     color: var(--accent);
 }
+
+.add-row-bottom {
+    display: flex;
+    gap: 8px;
+}
+
+.select-styled {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 7px 12px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+    flex: 1;
+}
+
+.select-styled:focus {
+    border-color: var(--accent);
+}
