@@ -1,0 +1,540 @@
+:root {
+    --bg: #0c0c0f;
+    --surface: #141418;
+    --surface2: #1c1c22;
+    --border: #2a2a35;
+    --accent: #b8ff5e;
+    --accent2: #5eaaff;
+    --accent3: #ff6b9d;
+    --text: #f0f0f5;
+    --text-muted: #7a7a90;
+    --radius: 16px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Background grid */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(184, 255, 94, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(184, 255, 94, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.glow-orb {
+    position: fixed;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.glow-orb.one {
+    background: rgba(184, 255, 94, 0.06);
+    top: -200px;
+    left: -200px;
+}
+
+.glow-orb.two {
+    background: rgba(94, 170, 255, 0.05);
+    bottom: -200px;
+    right: -200px;
+}
+
+.wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+}
+
+/* Header */
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 32px 0 48px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 48px;
+}
+
+.logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.logo span {
+    color: var(--accent);
+}
+
+.current-date {
+    font-size: 13px;
+    color: var(--text-muted);
+    background: var(--surface2);
+    padding: 8px 16px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+}
+
+/* Week progress overview */
+.week-overview {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-bottom: 48px;
+}
+
+.week-mini {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.week-mini::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--accent);
+    transform: scaleX(var(--pct, 0));
+    transform-origin: left;
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.week-mini.active {
+    border-color: var(--accent);
+    background: rgba(184, 255, 94, 0.05);
+}
+
+.week-mini.today .day-abbr {
+    color: var(--accent);
+}
+
+.week-mini:hover {
+    transform: translateY(-2px);
+    border-color: rgba(184, 255, 94, 0.4);
+}
+
+.day-abbr {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.day-pct {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.day-task-count {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* Main content */
+.main-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 24px;
+}
+
+@media (max-width: 900px) {
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .week-overview {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Day panel */
+.day-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.day-header {
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(135deg, var(--surface2), var(--surface));
+}
+
+.day-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.day-progress-ring {
+    position: relative;
+    width: 72px;
+    height: 72px;
+}
+
+.day-progress-ring svg {
+    transform: rotate(-90deg);
+}
+
+.ring-bg {
+    fill: none;
+    stroke: var(--border);
+    stroke-width: 5;
+}
+
+.ring-fill {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 5;
+    stroke-linecap: round;
+    stroke-dasharray: 201;
+    stroke-dashoffset: 201;
+    transition: stroke-dashoffset 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ring-pct {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--accent);
+}
+
+/* Task list */
+.task-list {
+    padding: 20px 24px;
+    min-height: 300px;
+}
+
+.task-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+}
+
+.task-empty .empty-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    opacity: 0.4;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    margin-bottom: 10px;
+    transition: all 0.2s ease;
+    animation: slideIn 0.3s ease;
+    cursor: default;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.task-item:hover {
+    border-color: rgba(184, 255, 94, 0.25);
+}
+
+.task-checkbox {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 2px solid var(--border);
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.task-checkbox.checked {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.task-checkbox.checked::after {
+    content: '✓';
+    color: #000;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.task-text {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.task-text.done {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+.task-delete {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    opacity: 0;
+    transition: all 0.2s;
+}
+
+.task-item:hover .task-delete {
+    opacity: 1;
+}
+
+.task-delete:hover {
+    background: rgba(255, 107, 157, 0.15);
+    color: var(--accent3);
+}
+
+/* Add task form */
+.add-form {
+    padding: 20px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+}
+
+.add-input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.add-input:focus {
+    border-color: var(--accent);
+}
+
+.add-input::placeholder {
+    color: var(--text-muted);
+}
+
+.add-btn {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.add-btn:hover {
+    transform: scale(1.04);
+    box-shadow: 0 0 20px rgba(184, 255, 94, 0.3);
+}
+
+/* Stats panel */
+.stats-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.stats-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+}
+
+.stats-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.stat-row:last-child {
+    margin-bottom: 0;
+}
+
+.stat-label {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.stat-value.green {
+    color: var(--accent);
+}
+
+.stat-value.blue {
+    color: var(--accent2);
+}
+
+.stat-value.pink {
+    color: var(--accent3);
+}
+
+/* Week bar chart */
+.bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 100px;
+    margin-top: 4px;
+}
+
+.bar-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    height: 100%;
+    cursor: pointer;
+}
+
+.bar-col {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+}
+
+.bar-fill {
+    width: 100%;
+    background: var(--border);
+    border-radius: 6px 6px 0 0;
+    transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    min-height: 4px;
+    position: relative;
+}
+
+.bar-fill.active {
+    background: var(--accent);
+}
+
+.bar-fill.has-tasks {
+    background: var(--accent2);
+}
+
+.bar-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    font-family: 'Syne', sans-serif;
+    text-transform: uppercase;
+}
+
+/* Motivational badge */
+.motivation {
+    background: linear-gradient(135deg, rgba(184, 255, 94, 0.1), rgba(94, 170, 255, 0.08));
+    border: 1px solid rgba(184, 255, 94, 0.2);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    text-align: center;
+}
+
+.motivation .emoji {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.motivation p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.motivation strong {
+    color: var(--accent);
+}
